@@ -1,3 +1,3 @@
-module github.com/HuXingGG/maxreauest
+module github.com/HuXingGG/maxrequest
 
 go 1.17
