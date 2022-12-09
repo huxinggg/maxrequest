@@ -7,7 +7,7 @@
 
 go.mod文件加入以下代码，然后执行go mod tidy
 ```
-gitee.com/justin0218/maxrequest latest
+github.com/HuXingGG/maxreauest latest
 ```
 
 
