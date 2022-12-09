@@ -1,3 +1,3 @@
-module gitee.com/justin0218/maxrequest
+module github.com/HuXingGG/maxreauest
 
 go 1.17
