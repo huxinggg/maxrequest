@@ -84,30 +84,32 @@ func (s *attr) PostForm(url string, body interface{}) MaxRequestAttr {
 
 func (s *attr) Result(in interface{}) (resp *http.Response, body []byte, err error) {
 	postByte := make([]byte, 0)
-	if s.Method == "POST_FORM" {
-		s.Method = "POST"
-		formValues := url.Values{}
-		objT := reflect.TypeOf(s.PostBody)
-		objV := reflect.ValueOf(s.PostBody)
-		for i := 0; i < objT.NumField(); i++ {
-			fileName, ok := objT.Field(i).Tag.Lookup("json")
-			if ok {
-				formValues.Set(fileName, fmt.Sprintf("%v", objV.Field(i).Interface()))
-			} else {
-				formValues.Set(objT.Field(i).Name, fmt.Sprintf("%v", objV.Field(i).Interface()))
+	if s.Method != "GET" {
+		if s.Method == "POST_FORM" {
+			s.Method = "POST"
+			formValues := url.Values{}
+			objT := reflect.TypeOf(s.PostBody)
+			objV := reflect.ValueOf(s.PostBody)
+			for i := 0; i < objT.NumField(); i++ {
+				fileName, ok := objT.Field(i).Tag.Lookup("json")
+				if ok {
+					formValues.Set(fileName, fmt.Sprintf("%v", objV.Field(i).Interface()))
+				} else {
+					formValues.Set(objT.Field(i).Name, fmt.Sprintf("%v", objV.Field(i).Interface()))
+				}
 			}
-		}
-		fmt.Println(formValues)
-		postByte = []byte(formValues.Encode())
-	} else {
-		if reflect.TypeOf(s.PostBody).String() == "string" {
-			postByte = []byte(s.PostBody.(string))
-		} else if reflect.TypeOf(s.PostBody).String() == "[]uint8" {
-			postByte = s.PostBody.([]uint8)
+			fmt.Println(formValues)
+			postByte = []byte(formValues.Encode())
 		} else {
-			postByte, err = json.Marshal(s.PostBody)
-			if err != nil {
-				return
+			if reflect.TypeOf(s.PostBody).String() == "string" {
+				postByte = []byte(s.PostBody.(string))
+			} else if reflect.TypeOf(s.PostBody).String() == "[]uint8" {
+				postByte = s.PostBody.([]uint8)
+			} else {
+				postByte, err = json.Marshal(s.PostBody)
+				if err != nil {
+					return
+				}
 			}
 		}
 	}
